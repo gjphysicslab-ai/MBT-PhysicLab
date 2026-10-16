@@ -1,0 +1,491 @@
+<title>마이크로비트를 활용한 물리학 실험실</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+<style>
+/* ── 토큰 ── */
+:root {
+  --bg:        #0d1117;
+  --bg2:       #111820;
+  --surface:   #161b22;
+  --border:    #21262d;
+  --border2:   #30363d;
+  --text:      #e6edf3;
+  --muted:     #8b949e;
+  --accent:    #58a6ff;
+  --green:     #3fb950;
+  --yellow:    #f0c040;
+  --purple:    #d2a8ff;
+  --red:       #ff7b72;
+  --mono:      'IBM Plex Mono', monospace;
+  --sans:      'IBM Plex Sans KR', sans-serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg:      #f6f8fa;
+    --bg2:     #eef1f5;
+    --surface: #ffffff;
+    --border:  #d0d7de;
+    --border2: #b8c0ca;
+    --text:    #1f2328;
+    --muted:   #636c76;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg:      #f6f8fa;
+  --bg2:     #eef1f5;
+  --surface: #ffffff;
+  --border:  #d0d7de;
+  --border2: #b8c0ca;
+  --text:    #1f2328;
+  --muted:   #636c76;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100%;
+  padding-left:  max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+
+/* ── 헤더 ── */
+header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 50;
+  background: rgba(13,17,23,.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) header { background: rgba(246,248,250,.9); }
+}
+:root[data-theme="light"] header { background: rgba(246,248,250,.9); }
+
+.logo-area { display: flex; align-items: center; gap: 10px; }
+.logo-mark {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, #1f6feb 0%, #8957e5 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 13px; font-weight: 600; color: #fff;
+  flex-shrink: 0;
+}
+.logo-text { font-size: 14px; font-weight: 600; letter-spacing: -.2px; }
+.logo-sub  { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 1px; }
+.header-badge {
+  font-family: var(--mono); font-size: 10px;
+  padding: 4px 10px; border-radius: 20px;
+  border: 1px solid rgba(88,166,255,.35);
+  color: var(--accent); background: rgba(88,166,255,.07);
+  white-space: nowrap;
+}
+
+/* ── 히어로 ── */
+.hero {
+  text-align: center;
+  padding: 72px max(16px, env(safe-area-inset-left, 0px)) 56px;
+  max-width: 720px; margin: 0 auto;
+}
+.hero-eyebrow {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px;
+  color: var(--accent); text-transform: uppercase; margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; flex: 1; max-width: 40px; height: 1px; background: var(--border2);
+}
+.hero-title {
+  font-size: clamp(28px, 5vw, 46px);
+  font-weight: 700; line-height: 1.2;
+  letter-spacing: -.5px;
+  text-wrap: balance;
+  margin-bottom: 16px;
+}
+.hero-title em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-desc {
+  font-size: 15px; color: var(--muted); line-height: 1.7;
+  max-width: 480px; margin: 0 auto 32px;
+}
+.hero-chips {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+}
+.chip {
+  font-family: var(--mono); font-size: 11px;
+  padding: 5px 12px; border-radius: 20px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+/* ── 구분선 ── */
+.section-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.2px;
+  color: var(--muted); text-transform: uppercase;
+  padding: 0 max(16px, env(safe-area-inset-left, 0px));
+  max-width: 1100px; margin: 0 auto 16px;
+}
+
+/* ── 실험 카드 그리드 ── */
+.cards-wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.exp-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+  text-decoration: none; color: inherit;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.exp-card:hover {
+  border-color: var(--card-accent);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,.25);
+}
+.exp-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--card-accent);
+  opacity: 0; transition: opacity .2s;
+}
+.exp-card:hover::before { opacity: 1; }
+
+/* 카드 상단 아이콘 영역 */
+.card-vis {
+  height: 130px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.card-vis svg {
+  width: 80px; height: 80px;
+  opacity: .9;
+  transition: transform .3s, opacity .3s;
+}
+.exp-card:hover .card-vis svg {
+  transform: scale(1.08);
+  opacity: 1;
+}
+/* 아이콘 뒤 원형 글로우 */
+.card-vis::after {
+  content: '';
+  position: absolute;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--card-accent) 0%, transparent 70%);
+  opacity: .08;
+  transition: opacity .3s;
+}
+.exp-card:hover .card-vis::after { opacity: .15; }
+
+/* 카드 본문 */
+.card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+.card-num {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1px;
+  color: var(--muted); text-transform: uppercase; margin-bottom: 8px;
+}
+.card-title {
+  font-size: 17px; font-weight: 600; letter-spacing: -.2px;
+  margin-bottom: 8px; color: var(--card-accent);
+}
+.card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; flex: 1; }
+.card-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  padding: 3px 8px; border-radius: 4px; background: var(--bg);
+  border: 1px solid var(--border);
+}
+.card-cta {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--card-accent); display: flex; align-items: center; gap: 5px;
+  white-space: nowrap;
+}
+.cta-arrow { transition: transform .2s; }
+.exp-card:hover .cta-arrow { transform: translateX(4px); }
+
+/* ── 시스템 안내 섹션 ── */
+.info-wrap {
+  max-width: 1100px; margin: 0 auto 64px;
+  padding: 0 max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.info-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px 20px;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.info-icon {
+  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.info-title  { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.info-desc   { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+/* ── 푸터 ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 24px max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
+  display: flex; flex-wrap: wrap; gap: 8px;
+  align-items: center; justify-content: space-between;
+  max-width: 1100px; margin: 0 auto;
+}
+.footer-text { font-size: 12px; color: var(--muted); }
+.footer-mono { font-family: var(--mono); }
+
+/* ── 애니메이션 ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero          { animation: fadeUp .6s ease both; }
+.section-label { animation: fadeUp .6s .1s ease both; }
+.exp-card:nth-child(1) { animation: fadeUp .5s .15s ease both; }
+.exp-card:nth-child(2) { animation: fadeUp .5s .25s ease both; }
+.exp-card:nth-child(3) { animation: fadeUp .5s .35s ease both; }
+.info-card     { animation: fadeUp .5s .4s  ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+@media (max-width: 600px) {
+  .cards-wrap { grid-template-columns: 1fr; }
+  .header-badge { display: none; }
+}
+</style>
+
+<!-- ── 헤더 ── -->
+<header>
+  <div class="logo-area">
+    <div class="logo-mark">µB</div>
+    <div>
+      <div class="logo-text">마이크로비트를 활용한 물리학 실험실</div>
+      <div class="logo-sub">Web Serial · Real-time · Open Source</div>
+    </div>
+  </div>
+</header>
+
+<!-- ── 히어로 ── -->
+<section class="hero">
+  <div class="hero-eyebrow">Microcomputer-Based Laboratory</div>
+  <h1 class="hero-title">
+    마이크로비트로 진행하는<br>
+    <em>데이터 기반 물리학 실험</em>
+  </h1>
+</section>
+
+<!-- ── 실험 카드 ── -->
+<div class="section-label">실험 선택</div>
+<div class="cards-wrap">
+
+  <!-- 실험 01: 전압 측정 -->
+  <a class="exp-card" href="exp01_voltage/collector.html"
+     style="--card-accent: #f0c040">
+    <div class="card-vis">
+      <!-- 전압 측정 아이콘: 회로 + 전압계 -->
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- 배터리 몸체 -->
+        <rect x="10" y="30" width="36" height="20" rx="3" stroke="#f0c040" stroke-width="2.2" fill="none"/>
+        <rect x="46" y="35" width="5" height="10" rx="1.5" fill="#f0c040" opacity=".7"/>
+        <!-- + − 극 표시 -->
+        <line x1="20" y1="40" x2="20" y2="40" stroke="#f0c040" stroke-width="2"/>
+        <text x="18" y="44" font-size="9" fill="#f0c040" font-family="monospace" font-weight="700">−</text>
+        <text x="30" y="44" font-size="9" fill="#f0c040" font-family="monospace" font-weight="700">+</text>
+        <!-- 배선 -->
+        <path d="M51 40 H62 V20 H68" stroke="#f0c040" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".6"/>
+        <path d="M10 40 H4 V20 H68" stroke="#f0c040" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".6"/>
+        <!-- 전압계 원 -->
+        <circle cx="68" cy="20" r="10" stroke="#f0c040" stroke-width="2" fill="rgba(240,192,64,.1)"/>
+        <text x="64.5" y="24" font-size="9" fill="#f0c040" font-family="monospace" font-weight="700">V</text>
+        <!-- 채널 점 3개 -->
+        <circle cx="20" cy="62" r="3.5" fill="#f0c040" opacity=".9"/>
+        <circle cx="40" cy="62" r="3.5" fill="#58a6ff" opacity=".9"/>
+        <circle cx="60" cy="62" r="3.5" fill="#3fb950" opacity=".9"/>
+        <text x="17" y="75" font-size="7" fill="#f0c040" font-family="monospace">P1</text>
+        <text x="37" y="75" font-size="7" fill="#58a6ff" font-family="monospace">P2</text>
+        <text x="57" y="75" font-size="7" fill="#3fb950" font-family="monospace">P3</text>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-num">EXP · 01</div>
+      <div class="card-title">전압 측정</div>
+      <div class="card-desc">
+        P1·P2·P3 핀에 연결된 3채널 전압을 실시간으로 수집합니다.
+        저항 분압 회로를 구성해 다양한 전기 실험에 활용할 수 있습니다.
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="card-tags">
+        <span class="tag">ADC</span>
+        <span class="tag">3채널</span>
+        <span class="tag">0–3.3V</span>
+      </div>
+      <div class="card-cta">실험 시작 <span class="cta-arrow">→</span></div>
+    </div>
+  </a>
+
+  <!-- 실험 02: 광혈류 심박 -->
+  <a class="exp-card" href="exp02_ppg/collector.html"
+     style="--card-accent: #ff7b72">
+    <div class="card-vis">
+      <!-- 광혈류 아이콘: 심장 + PPG 파형 -->
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- 심장 -->
+        <path d="M40 62 C40 62 14 46 14 28 C14 20 20 14 28 14 C32.5 14 36.5 16.5 40 20 C43.5 16.5 47.5 14 52 14 C60 14 66 20 66 28 C66 46 40 62 40 62Z"
+              fill="rgba(255,123,114,.15)" stroke="#ff7b72" stroke-width="2.2" stroke-linejoin="round"/>
+        <!-- PPG 파형 (심장 위) -->
+        <polyline points="16,35 22,35 25,28 28,42 31,20 34,44 37,35 44,35 47,29 50,38 53,35 64,35"
+                  stroke="#ff7b72" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".85"/>
+        <!-- 빛 방출 점 (PPG LED) -->
+        <circle cx="40" cy="38" r="3" fill="#ff7b72" opacity=".5"/>
+        <circle cx="40" cy="38" r="6" stroke="#ff7b72" stroke-width="1" opacity=".2"/>
+        <!-- BPM 텍스트 -->
+        <text x="27" y="72" font-size="8" fill="#ff7b72" font-family="monospace" font-weight="600">♥ BPM</text>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-num">EXP · 02</div>
+      <div class="card-title">광혈류 심박수 측정</div>
+      <div class="card-desc">
+        PPG 센서(조도 센서 응용)로 손가락의 혈류 변화를 감지하고
+        실시간 파형에서 심박수를 자동 계산합니다.
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="card-tags">
+        <span class="tag">PPG</span>
+        <span class="tag">심박수</span>
+        <span class="tag">슬라이딩</span>
+      </div>
+      <div class="card-cta">실험 시작 <span class="cta-arrow">→</span></div>
+    </div>
+  </a>
+
+  <!-- 실험 03: 자기장 -->
+  <a class="exp-card" href="exp03_magnet/collector.html"
+     style="--card-accent: #d2a8ff">
+    <div class="card-vis">
+      <!-- 자기장 아이콘: 막대자석 + 자기력선 -->
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- 자기력선 (타원 호) -->
+        <path d="M40 40 m-24 0 a24 14 0 0 1 48 0" stroke="#d2a8ff" stroke-width="1.4" fill="none" opacity=".35" stroke-dasharray="3 2"/>
+        <path d="M40 40 m-16 0 a16 9 0 0 1 32 0"  stroke="#d2a8ff" stroke-width="1.4" fill="none" opacity=".5"  stroke-dasharray="3 2"/>
+        <path d="M40 40 m-24 0 a24 14 0 0 0 48 0" stroke="#d2a8ff" stroke-width="1.4" fill="none" opacity=".35" stroke-dasharray="3 2"/>
+        <path d="M40 40 m-16 0 a16 9 0 0 0 32 0"  stroke="#d2a8ff" stroke-width="1.4" fill="none" opacity=".5"  stroke-dasharray="3 2"/>
+        <!-- 막대자석 몸체 -->
+        <rect x="14" y="34" width="24" height="12" rx="3" fill="rgba(255,123,114,.8)" stroke="#ff7b72" stroke-width="1.5"/>
+        <rect x="42" y="34" width="24" height="12" rx="3" fill="rgba(88,166,255,.8)" stroke="#58a6ff" stroke-width="1.5"/>
+        <!-- N / S 표시 -->
+        <text x="20" y="44" font-size="10" fill="#fff" font-family="monospace" font-weight="700">N</text>
+        <text x="50" y="44" font-size="10" fill="#fff" font-family="monospace" font-weight="700">S</text>
+        <!-- |B| µT 텍스트 -->
+        <text x="26" y="68" font-size="8" fill="#d2a8ff" font-family="monospace" font-weight="600">|B| µT</text>
+        <!-- 나침반 화살표 -->
+        <line x1="40" y1="14" x2="40" y2="22" stroke="#d2a8ff" stroke-width="1.8" stroke-linecap="round" opacity=".6"/>
+        <polygon points="40,10 37.5,16 42.5,16" fill="#d2a8ff" opacity=".6"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-num">EXP · 03</div>
+      <div class="card-title">자기장 측정</div>
+      <div class="card-desc">
+        내장 자력계(LSM303AGR)로 X·Y·Z 3축 자기장과 합성 자기장 |B|를
+        실시간 측정합니다. 자석 역학 실험에 활용합니다.
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="card-tags">
+        <span class="tag">자력계</span>
+        <span class="tag">3축</span>
+        <span class="tag">µT</span>
+      </div>
+      <div class="card-cta">실험 시작 <span class="cta-arrow">→</span></div>
+    </div>
+  </a>
+
+</div>
+
+<!-- ── 시스템 안내 ── -->
+<div class="section-label" style="margin-top:8px">사용 방법</div>
+<div class="info-wrap">
+  <div class="info-card">
+    <div class="info-icon" style="background:rgba(210,168,255,.12)">💾</div>
+    <div>
+      <div class="info-title">코드 업로드</div>
+      <div class="info-desc">각 실험 페이지에서 제공하는 마이크로비트 코드를 MakeCode에서 불러와 마이크로비트에 저장합니다.</div>
+    </div>
+  </div>
+  <div class="info-card">
+    <div class="info-icon" style="background:rgba(88,166,255,.12)">🔌</div>
+    <div>
+      <div class="info-title">USB 연결</div>
+      <div class="info-desc">마이크로비트를 USB로 PC에 연결한 뒤 Chrome에서 [포트 연결]을 클릭합니다.</div>
+    </div>
+  </div>
+  <div class="info-card">
+    <div class="info-icon" style="background:rgba(63,185,80,.12)">▶</div>
+    <div>
+      <div class="info-title">측정 시작</div>
+      <div class="info-desc">마이크로비트의 A 버튼을 누르거나 페이지에서 [측정 시작]을 클릭합니다.</div>
+    </div>
+  </div>
+  <div class="info-card">
+    <div class="info-icon" style="background:rgba(240,192,64,.12)">📊</div>
+    <div>
+      <div class="info-title">실시간 그래프</div>
+      <div class="info-desc">데이터가 자동으로 그래프와 표에 표시됩니다. 슬라이딩·누적 모드를 선택할 수 있습니다.</div>
+    </div>
+  </div>
+  <div class="info-card">
+    <div class="info-icon" style="background:rgba(210,168,255,.12)">💾</div>
+    <div>
+      <div class="info-title">CSV 저장</div>
+      <div class="info-desc">측정 완료 후 [CSV 다운로드]로 Excel에서 바로 열 수 있는 파일을 저장합니다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 푸터 ── -->
+<footer>
+  <span class="footer-text footer-mono" style="color:var(--border2)">micro:bit V2 · Web Serial API · Chrome 89+</span>
+</footer>
