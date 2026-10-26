@@ -60,6 +60,16 @@
   .status-badge.connected { border-color: var(--green); color: var(--green); background: rgba(63,185,80,.08); }
   .status-badge.recording { border-color: var(--p1);   color: var(--p1);   background: rgba(240,192,64,.08); }
 
+  .btn-home {
+    font-family: var(--mono); font-size: 11px;
+    padding: 5px 12px; border-radius: 6px;
+    border: 1px solid var(--border);
+    color: var(--muted); background: transparent;
+    text-decoration: none; transition: all .15s;
+    white-space: nowrap;
+  }
+  .btn-home:hover { background: var(--border); color: var(--text); }
+
   /* ── Layout ── */
   main {
     flex: 1;
@@ -245,7 +255,8 @@
     <div class="logo-dot" id="logoDot"></div>
     마이크로비트로 전압 측정 &nbsp;·&nbsp; 다채널 (P1 · P2 · P3)
   </div>
-  <div class="header-right">
+  <div class="header-right" style="display:flex;align-items:center;gap:10px">
+    <a class="btn-home" href="index.html">← Home으로 돌아가기</a>
     <span class="status-badge" id="statusBadge">연결 안 됨</span>
   </div>
 </header>
