@@ -228,6 +228,15 @@ header {
 }
 .cta-arrow { transition: transform .2s; }
 .exp-card:hover .cta-arrow { transform: translateX(4px); }
+.makecode-btn {
+  font-family: var(--mono); font-size: 10px;
+  padding: 4px 9px; border-radius: 5px;
+  border: 1px solid var(--border2);
+  color: var(--muted); background: transparent;
+  text-decoration: none; transition: all .15s;
+  white-space: nowrap;
+}
+.makecode-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(88,166,255,.07); }
 
 /* ── 시스템 안내 섹션 ── */
 .info-wrap {
@@ -350,7 +359,10 @@ footer {
         <span class="tag">3채널</span>
         <span class="tag">0–3.3V</span>
       </div>
-      <div class="card-cta">실험 시작 <span class="cta-arrow">→</span></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="makecode-btn" onclick="event.preventDefault();event.stopPropagation();window.open('https://makecode.microbit.org/_9Hvdq8JH16ws','_blank')">MakeCode ↗</button>
+        <div class="card-cta">실험 시작 <span class="cta-arrow">→</span></div>
+      </div>
     </div>
   </a>
 
