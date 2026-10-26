@@ -912,7 +912,14 @@ async function readLoop() {
 //  버튼 상태
 // ─────────────────────────────────────────────
 function setButtonState(state) {
-  btnConnect.disabled  = (state !== 'idle');
+  if (state === 'idle') {
+    btnConnect.className = 'btn btn-primary';
+    btnConnect.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg> 포트 연결`;
+  } else {
+    btnConnect.className = 'btn btn-danger';
+    btnConnect.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> 연결 해제`;
+  }
+  btnConnect.disabled  = false;
   btnStart.disabled    = !(state === 'connected' || state === 'stopped');
   btnPause.disabled    = !(state === 'measuring' || state === 'paused');
   btnStop.disabled     = !(state === 'measuring' || state === 'paused');
@@ -926,9 +933,23 @@ function setButtonState(state) {
 }
 
 // ─────────────────────────────────────────────
-//  포트 연결
+//  포트 연결 / 해제
 // ─────────────────────────────────────────────
+async function disconnectPort() {
+  readLoopRunning = false;
+  stopRenderLoop(); stopUiTick(); stopLiveOnlyTick();
+  try { if (reader) { await reader.cancel(); reader.releaseLock(); reader = null; } } catch(e) {}
+  try { if (port)   { await port.close();    port = null; } } catch(e) {}
+  connected = false; measuring = false; paused = false; recording = false; buffer = '';
+  lastLiveRaws = [null, null, null];
+  statusBadge.textContent = '연결 안 됨'; statusBadge.className = 'status-badge';
+  logoDot.className = 'logo-dot';
+  setButtonState('idle');
+  log('포트 연결 해제.', 'warn');
+}
+
 btnConnect.addEventListener('click', async () => {
+  if (connected) { await disconnectPort(); return; }
   if (!('serial' in navigator)) {
     log('Chrome 89+ 가 필요합니다. Web Serial API 미지원.', 'err');
     alert('Chrome 89 이상에서만 지원됩니다.');
