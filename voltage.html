@@ -1048,9 +1048,9 @@ btnClear.addEventListener('click', () => {
 btnDownload.addEventListener('click', () => {
   if (data.length === 0) { alert('다운로드할 데이터가 없습니다.'); return; }
   const BOM    = '\uFEFF';
-  const header = '번호,시각(hh:mm:ss.ms),경과시간(s),P1 ADC,P1 전압(V),P2 ADC,P2 전압(V),P3 ADC,P3 전압(V)\n';
+  const header = '번호,시각(hh:mm:ss.ms),경과시간(s),P1 전압(V),P2 전압(V),P3 전압(V)\n';
   const rows   = data.map(d =>
-    `${d.idx},${d.ts},${d.elapsed.toFixed(3)},${d.raws[0]},${d.volts[0].toFixed(4)},${d.raws[1]},${d.volts[1].toFixed(4)},${d.raws[2]},${d.volts[2].toFixed(4)}`
+    `${d.idx},${d.ts},${d.elapsed.toFixed(3)},${d.volts[0].toFixed(4)},${d.volts[1].toFixed(4)},${d.volts[2].toFixed(4)}`
   ).join('\n');
   const blob = new Blob([BOM + header + rows], { type: 'text/csv;charset=utf-8;' });
   const url  = URL.createObjectURL(blob);
