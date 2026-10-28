@@ -534,6 +534,7 @@ let connected = false, measuring = false, paused = false, recording = false;
 let data = [];
 let chartData = [];
 let startTime = null;
+let startT    = null;   // ★ 수정1: 마이크로비트 내부 타이머 기준점 (µs)
 let statsAcc = [0,1,2].map(() => ({ min: Infinity, max: -Infinity, sum: 0, sumSq: 0 }));
 let lastLiveRaws = [null, null, null];
 let chartDirty = false;
@@ -653,7 +654,6 @@ function drawChart() {
   ctx.fillStyle = '#0d1117';
   ctx.fillRect(0, 0, W, H);
 
-  // 표시 데이터 결정
   let disp;
   const maxPts = parseInt(document.getElementById('maxPoints').value) || 300;
   if (chartMode === 'sliding') {
@@ -679,7 +679,6 @@ function drawChart() {
   const gW = W - PAD_L - PAD_R;
   const gH = H - PAD_T - PAD_B;
 
-  // X축 함수 (모드별)
   let toX;
   if (chartMode === 'sliding') {
     toX = (_, i) => PAD_L + (i / Math.max(1, disp.length - 1)) * gW;
@@ -689,7 +688,6 @@ function drawChart() {
   }
   const toY = v => PAD_T + (1 - (v - yMin) / (yMax - yMin)) * gH;
 
-  // 그리드
   ctx.lineWidth = 1; ctx.strokeStyle = '#21262d';
   for (let i = 0; i <= 5; i++) {
     const v = yMin + (yMax - yMin) * i / 5;
@@ -700,7 +698,6 @@ function drawChart() {
     ctx.fillText(v.toFixed(2) + 'V', PAD_L - 5, y + 3);
   }
 
-  // Vref 기준선
   if (vRef >= yMin && vRef <= yMax) {
     const yV = toY(vRef);
     ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.setLineDash([5,5]);
@@ -711,7 +708,6 @@ function drawChart() {
     ctx.fillText('Vref ' + vRef.toFixed(1) + 'V', PAD_L + 4, yV - 3);
   }
 
-  // 각 핀 파형 그리기
   [0, 1, 2].forEach(i => {
     if (!pinSelected[i]) return;
     const color = PIN_COLORS[i];
@@ -744,7 +740,6 @@ function drawChart() {
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
   });
 
-  // 범례
   let lgX = PAD_L + 8;
   ctx.font = '10px IBM Plex Mono, monospace'; ctx.textAlign = 'left';
   [0, 1, 2].forEach(i => {
@@ -756,7 +751,6 @@ function drawChart() {
     lgX += 50;
   });
 
-  // X축 레이블
   ctx.fillStyle = '#8b949e'; ctx.font = '9px IBM Plex Mono, monospace'; ctx.textAlign = 'center';
   for (let i = 0; i <= 5; i++) {
     if (chartMode === 'sliding') {
@@ -859,24 +853,31 @@ function startRenderLoop() { if (!rafId) rafId = requestAnimationFrame(renderLoo
 function stopRenderLoop()  { if (rafId) { cancelAnimationFrame(rafId); rafId = null; } drawChart(); }
 
 // ─────────────────────────────────────────────
-//  데이터 처리
+//  ★ 수정2: 데이터 처리 — T값 파싱 + 마이크로비트 타이머 기반 elapsed
 // ─────────────────────────────────────────────
 let buffer = '';
 
 function processLine(line) {
   if (!line.startsWith(PREFIX)) return;
+
   const parts = line.slice(PREFIX.length).trim().split(',');
-  if (parts.length !== 3) return;
-  const raws = parts.map(s => parseInt(s.trim(), 10));
+  if (parts.length !== 4) return;                          // ★ 3→4 (T, a1, a2, a3)
+
+  const T    = parseInt(parts[0].trim(), 10);              // ★ 마이크로비트 내부 타이머 (µs)
+  const raws = [parts[1], parts[2], parts[3]]
+                 .map(s => parseInt(s.trim(), 10));        // ★ ADC 3채널
+  if (isNaN(T)) return;
   if (raws.some(v => isNaN(v) || v < 0 || v > ADC_MAX)) return;
 
   const now = Date.now();
   lastLiveRaws = raws;
 
   if (!recording) return;
-  if (!startTime) startTime = now;
+  if (startT === null) startT = T;                         // ★ 첫 수신 시 기준점 설정
 
-  const elapsed = (now - startTime) / 1000;
+  // ★ elapsed: PC 시각 대신 마이크로비트 내부 타이머 사용 (µs → 초)
+  const elapsed = (T - startT) / 1_000_000;
+
   const d = new Date(now);
   const ts = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}.${String(d.getMilliseconds()).padStart(3,'0')}`;
   const volts = raws.map(r => parseFloat(adcToVolt(r).toFixed(4)));
@@ -975,12 +976,14 @@ btnConnect.addEventListener('click', async () => {
 });
 
 // ─────────────────────────────────────────────
-//  측정 시작
+//  ★ 수정3: 측정 시작 — startT 초기화 추가
 // ─────────────────────────────────────────────
 btnStart.addEventListener('click', () => {
   data = []; chartData = [];
   statsAcc = [0,1,2].map(() => ({ min: Infinity, max: -Infinity, sum: 0, sumSq: 0 }));
-  startTime = null; firstRow = true; lastRenderedIdx = 0; chartDirty = false;
+  startTime = null;
+  startT    = null;   // ★ 마이크로비트 타이머 기준점 리셋
+  firstRow = true; lastRenderedIdx = 0; chartDirty = false;
   tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px 0;font-family:var(--sans)">데이터 수집 중...</td></tr>';
   document.getElementById('statCount').textContent = '0';
   document.getElementById('statTime').textContent  = '0.0 s';
@@ -991,7 +994,7 @@ btnStart.addEventListener('click', () => {
   statusBadge.textContent = '측정 중'; statusBadge.className = 'status-badge recording';
   logoDot.className = 'logo-dot active';
   setButtonState('measuring');
-  log('측정 시작. P1·P2·P3 전압 수집 중...', 'ok');
+  log('측정 시작. 마이크로비트 내부 타이머 기준으로 P1·P2·P3 전압 수집 중...', 'ok');
 });
 
 // ─────────────────────────────────────────────
@@ -1022,13 +1025,15 @@ btnStop.addEventListener('click', () => {
 });
 
 // ─────────────────────────────────────────────
-//  데이터 초기화
+//  ★ 수정4: 데이터 초기화 — startT 초기화 추가
 // ─────────────────────────────────────────────
 btnClear.addEventListener('click', () => {
   if (!confirm('수집된 전압 데이터를 모두 삭제하시겠습니까?')) return;
   data = []; chartData = [];
   statsAcc = [0,1,2].map(() => ({ min: Infinity, max: -Infinity, sum: 0, sumSq: 0 }));
-  startTime = null; firstRow = true; lastRenderedIdx = 0; chartDirty = false;
+  startTime = null;
+  startT    = null;   // ★ 마이크로비트 타이머 기준점 리셋
+  firstRow = true; lastRenderedIdx = 0; chartDirty = false;
   tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px 0;font-family:var(--sans)">데이터가 초기화되었습니다.</td></tr>';
   document.getElementById('statCount').textContent = '0';
   document.getElementById('statTime').textContent  = '0.0 s';
