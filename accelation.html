@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>마이크로비트로 가속도 측정 — 4채널 (|a|·aX·aY·aZ)</title>
+<title>가속도 측정</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
@@ -17,7 +17,7 @@
     --red:     #ff6b6b;
     --text:    #e6edf3;
     --muted:   #8b949e;
-    --c0:      #e6edf3;  /* |a| */
+    --c0:      #f0c040;  /* 알짜 a */
     --c1:      #ff7b72;  /* aX */
     --c2:      #3fb950;  /* aY */
     --c3:      #58a6ff;  /* aZ */
@@ -277,7 +277,7 @@
           <div class="ch-row-top">
             <div class="ch-row-left">
               <div class="ch-dot" style="background:var(--c0)"></div>
-              <span class="ch-label" style="color:var(--c0)">|a| 합성</span>
+              <span class="ch-label" style="color:var(--c0)">알짜 a</span>
             </div>
             <div class="ch-check" id="chCheck0"
                  style="background:var(--c0); border-color:var(--c0)">✓</div>
@@ -285,7 +285,7 @@
           <div class="ch-val-wrap">
             <span class="ch-val-int" id="cv0i" style="color:var(--c0)">—</span>
             <span class="ch-val-dec" id="cv0d" style="color:var(--c0)"></span>
-            <span class="ch-val-unit">mg</span>
+            <span class="ch-val-unit">m/s²</span>
           </div>
           <div class="ch-range-bg">
             <div class="ch-range-fill" id="cb0" style="background:var(--c0)"></div>
@@ -306,7 +306,7 @@
           <div class="ch-val-wrap">
             <span class="ch-val-int" id="cv1i" style="color:var(--c1)">—</span>
             <span class="ch-val-dec" id="cv1d" style="color:var(--c1)"></span>
-            <span class="ch-val-unit">mg</span>
+            <span class="ch-val-unit">m/s²</span>
           </div>
           <div class="ch-range-bg">
             <div class="ch-range-fill" id="cb1" style="background:var(--c1)"></div>
@@ -327,7 +327,7 @@
           <div class="ch-val-wrap">
             <span class="ch-val-int" id="cv2i" style="color:var(--c2)">—</span>
             <span class="ch-val-dec" id="cv2d" style="color:var(--c2)"></span>
-            <span class="ch-val-unit">mg</span>
+            <span class="ch-val-unit">m/s²</span>
           </div>
           <div class="ch-range-bg">
             <div class="ch-range-fill" id="cb2" style="background:var(--c2)"></div>
@@ -348,7 +348,7 @@
           <div class="ch-val-wrap">
             <span class="ch-val-int" id="cv3i" style="color:var(--c3)">—</span>
             <span class="ch-val-dec" id="cv3d" style="color:var(--c3)"></span>
-            <span class="ch-val-unit">mg</span>
+            <span class="ch-val-unit">m/s²</span>
           </div>
           <div class="ch-range-bg">
             <div class="ch-range-fill" id="cb3" style="background:var(--c3)"></div>
@@ -438,11 +438,11 @@
           </select>
         </div>
         <div class="config-row">
-          <span class="config-label">Y축 범위 (mg)</span>
+          <span class="config-label">Y축 범위 (m/s²)</span>
           <div style="display:flex;gap:6px;align-items:center">
-            <input class="config-input" type="number" id="yAxisMin" value="-2000" style="width:76px">
+            <input class="config-input" type="number" id="yAxisMin" value="-20" style="width:76px">
             <span style="color:var(--muted);font-size:12px">~</span>
-            <input class="config-input" type="number" id="yAxisMax" value="2000" style="width:76px">
+            <input class="config-input" type="number" id="yAxisMax" value="20" style="width:76px">
           </div>
         </div>
       </div>
@@ -450,7 +450,7 @@
 
     <!-- 통계 -->
     <div class="panel">
-      <div class="panel-header">측정 통계 (mg)</div>
+      <div class="panel-header">측정 통계 (m/s²)</div>
       <div class="panel-body" style="padding:10px 12px">
         <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:6px">
           총 <span id="statCount">0</span> pts &nbsp;|&nbsp; 경과 <span id="statTime">0.0 s</span>
@@ -499,10 +499,10 @@
               <th>#</th>
               <th>시각</th>
               <th>경과시간(s)</th>
-              <th style="color:var(--c0)">|a| (mg)</th>
-              <th style="color:var(--c1)">aX (mg)</th>
-              <th style="color:var(--c2)">aY (mg)</th>
-              <th style="color:var(--c3)">aZ (mg)</th>
+              <th style="color:var(--c0)">알짜 a (m/s²)</th>
+              <th style="color:var(--c1)">aX (m/s²)</th>
+              <th style="color:var(--c2)">aY (m/s²)</th>
+              <th style="color:var(--c3)">aZ (m/s²)</th>
             </tr>
           </thead>
           <tbody id="tableBody">
@@ -532,14 +532,19 @@
 //  상수 & 채널 설정
 // ─────────────────────────────────────────────
 const CH_COLORS  = ['#e6edf3', '#ff7b72', '#3fb950', '#58a6ff'];
-const CH_LABELS  = ['|a|', 'aX', 'aY', 'aZ'];
+const CH_LABELS  = ['알짜 a', 'aX', 'aY', 'aZ'];
 const PREFIX     = 'ACCEL:';
-const RANGE_MAX  = 2048;  // 표시 바 기준 (mg)
+
+// ★수정: mg → m/s² 변환 계수 (1 mg = 9.80665/1000 m/s²)
+const MG_TO_MS2  = 9.80665 / 1000;
+
+// 표시 바 기준: ±20 m/s² (≈ ±2040 mg)
+const RANGE_MAX  = 20;
 
 // ─────────────────────────────────────────────
 //  상태
 // ─────────────────────────────────────────────
-let chSelected   = [true, false, false, false];  // 기본: |a| 만 선택
+let chSelected   = [true, false, false, false];
 let chartMode    = 'sliding';
 
 let port = null, reader = null, readLoopRunning = false;
@@ -547,6 +552,7 @@ let connected = false, measuring = false, paused = false;
 let data = [];
 let chartData = [];
 let startTime = null;
+let startT    = null;   // ★수정: 마이크로비트 내부 타이머 기준점 (µs)
 let statsAcc = [0,1,2,3].map(() => ({ min: Infinity, max: -Infinity, sum: 0, sumSq: 0, n: 0 }));
 let chartDirty = false;
 
@@ -604,7 +610,7 @@ function updateTableHeader() {
   hr.innerHTML = '<th>#</th><th>시각</th><th>경과시간(s)</th>';
   [0,1,2,3].forEach(i => {
     if (chSelected[i])
-      hr.innerHTML += `<th style="color:${CH_COLORS[i]}">${CH_LABELS[i]} (mg)</th>`;
+      hr.innerHTML += `<th style="color:${CH_COLORS[i]}">${CH_LABELS[i]} (m/s²)</th>`;
   });
 }
 
@@ -684,10 +690,10 @@ function drawChart() {
     return;
   }
 
-  const yMin = parseFloat(document.getElementById('yAxisMin').value) ?? -2000;
-  const yMax = parseFloat(document.getElementById('yAxisMax').value) ?? 2000;
+  const yMin = parseFloat(document.getElementById('yAxisMin').value) ?? -20;
+  const yMax = parseFloat(document.getElementById('yAxisMax').value) ?? 20;
 
-  const PAD_L = 58, PAD_R = 16, PAD_T = 20, PAD_B = 30;
+  const PAD_L = 62, PAD_R = 16, PAD_T = 20, PAD_B = 30;
   const gW = W - PAD_L - PAD_R;
   const gH = H - PAD_T - PAD_B;
 
@@ -708,7 +714,7 @@ function drawChart() {
     ctx.beginPath(); ctx.moveTo(PAD_L, y); ctx.lineTo(W - PAD_R, y); ctx.stroke();
     ctx.fillStyle = '#8b949e';
     ctx.font = '9px IBM Plex Mono, monospace'; ctx.textAlign = 'right';
-    ctx.fillText(v.toFixed(0) + ' mg', PAD_L - 5, y + 3);
+    ctx.fillText(v.toFixed(1), PAD_L - 5, y + 3);
   }
 
   // 0선
@@ -722,15 +728,16 @@ function drawChart() {
     ctx.fillText('0', PAD_L + 4, y0 - 3);
   }
 
-  // 1g 기준선 (1000 mg)
-  if (1000 >= yMin && 1000 <= yMax) {
-    const y1g = toY(1000);
+  // ★수정: 1g 기준선 9.807 m/s²
+  const G = 9.80665;
+  if (G >= yMin && G <= yMax) {
+    const y1g = toY(G);
     ctx.strokeStyle = 'rgba(240,192,64,.2)'; ctx.setLineDash([3,5]);
     ctx.beginPath(); ctx.moveTo(PAD_L, y1g); ctx.lineTo(W - PAD_R, y1g); ctx.stroke();
     ctx.setLineDash([]);
     ctx.fillStyle = 'rgba(240,192,64,.4)'; ctx.font = '9px IBM Plex Mono, monospace';
     ctx.textAlign = 'left';
-    ctx.fillText('1g', PAD_L + 4, y1g - 3);
+    ctx.fillText('1g (9.807)', PAD_L + 4, y1g - 3);
   }
 
   // 각 채널 파형 그리기
@@ -797,9 +804,11 @@ function drawChart() {
 function updateLiveDisplay(vals) {
   vals.forEach((v, i) => {
     const absV = Math.abs(v);
+    // ★수정: 소수점 2자리로 표시 (m/s² 단위 적합)
     const intPart = String(Math.trunc(absV));
-    const decPart = '.' + String(Math.round((absV % 1) * 10)).padStart(1, '0');
-    const sign = v < 0 && i !== 0 ? '−' : '';  // |a|는 항상 양수
+    const dec2 = Math.round((absV % 1) * 100);
+    const decPart = '.' + String(dec2).padStart(2, '0');
+    const sign = v < 0 && i !== 0 ? '−' : '';
     document.getElementById(`cv${i}i`).textContent = sign + intPart;
     document.getElementById(`cv${i}d`).textContent = decPart;
     const pct = Math.min(100, (absV / RANGE_MAX) * 100);
@@ -816,11 +825,11 @@ function updateStats(vals) {
     if (v < s.min) s.min = v;
     if (v > s.max) s.max = v;
     s.sum += v; s.sumSq += v * v; s.n++;
-    document.getElementById(`sMin${i}`).textContent = s.min.toFixed(0);
-    document.getElementById(`sMax${i}`).textContent = s.max.toFixed(0);
-    document.getElementById(`sAvg${i}`).textContent = (s.sum / s.n).toFixed(0);
+    document.getElementById(`sMin${i}`).textContent = s.min.toFixed(2);
+    document.getElementById(`sMax${i}`).textContent = s.max.toFixed(2);
+    document.getElementById(`sAvg${i}`).textContent = (s.sum / s.n).toFixed(2);
     const variance = s.sumSq / s.n - (s.sum / s.n) ** 2;
-    document.getElementById(`sStd${i}`).textContent = Math.sqrt(Math.max(0, variance)).toFixed(0);
+    document.getElementById(`sStd${i}`).textContent = Math.sqrt(Math.max(0, variance)).toFixed(2);
   });
 }
 
@@ -832,9 +841,10 @@ function addTableRow(row) {
   if (rowCount === 0) tableBody.innerHTML = '';
   rowCount++;
   const tr = document.createElement('tr');
+  // ★수정: m/s² 단위 소수점 3자리 표시
   let html = `<td class="idx">${rowCount}</td><td>${row.time}</td><td>${row.elapsed.toFixed(3)}</td>`;
   [0,1,2,3].forEach(i => {
-    if (chSelected[i]) html += `<td style="color:${CH_COLORS[i]}">${row.vals[i].toFixed(0)}</td>`;
+    if (chSelected[i]) html += `<td style="color:${CH_COLORS[i]}">${row.vals[i].toFixed(3)}</td>`;
   });
   tr.innerHTML = html;
   tableBody.appendChild(tr);
@@ -845,24 +855,51 @@ function addTableRow(row) {
 }
 
 // ─────────────────────────────────────────────
-//  시리얼 파싱
+//  실시간 미리보기 파싱 (측정 시작 전 연결만 해도 값 표시)
+// ─────────────────────────────────────────────
+function parseLinePreview(line) {
+  if (!line.startsWith(PREFIX)) return;
+  const body = line.slice(PREFIX.length).trim();
+  const parts = body.split(',');
+  if (parts.length !== 5) return;
+  const raw = parts.map(Number);
+  if (raw.some(isNaN)) return;
+  // raw[0]=T, raw[1..4]=total,ax,ay,az (mg)
+  const vals = raw.slice(1).map(v => v * MG_TO_MS2);
+  updateLiveDisplay(vals);
+}
+
+// ─────────────────────────────────────────────
+//  시리얼 파싱 (데이터 기록 — 측정 중일 때만)
 // ─────────────────────────────────────────────
 function parseLine(line) {
   if (!line.startsWith(PREFIX)) return;
   const body = line.slice(PREFIX.length).trim();
   const parts = body.split(',');
-  if (parts.length !== 4) return;
-  const vals = parts.map(Number);
-  if (vals.some(isNaN)) return;
+  // ★수정: T,total,ax,ay,az → 5개 필드
+  if (parts.length !== 5) return;
+  const raw = parts.map(Number);
+  if (raw.some(isNaN)) return;
+
+  // ★수정: 첫 번째 값은 마이크로비트 타임스탬프 (µs)
+  const T = raw[0];
+  if (startT === null) startT = T;
+  const elapsed = (T - startT) / 1_000_000;  // µs → s
+
+  // ★수정: mg → m/s² 변환
+  const vals = raw.slice(1).map(v => v * MG_TO_MS2);
+  // vals[0]=|a|, vals[1]=ax, vals[2]=ay, vals[3]=az
 
   const now = new Date();
   if (!startTime) startTime = now;
-  const elapsed = (now - startTime) / 1000;
+
+  // ★수정: 전압 측정 코드와 동일한 시각 표기 형식 (HH:MM:SS.ms)
+  const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}.${String(now.getMilliseconds()).padStart(3,'0')}`;
 
   const row = {
-    time: now.toLocaleTimeString('ko-KR', { hour12: false }) + '.' + String(now.getMilliseconds()).padStart(3,'0'),
+    time: ts,
     elapsed,
-    vals   // [|a|, ax, ay, az]
+    vals
   };
 
   data.push(row);
@@ -871,6 +908,9 @@ function parseLine(line) {
   updateLiveDisplay(vals);
   updateStats(vals);
   addTableRow(row);
+
+  // ★수정: 데이터가 쌓이는 즉시 CSV 다운로드 버튼 활성화 (측정 중에도 가능)
+  btnDownload.disabled = false;
 
   document.getElementById('statCount').textContent = data.length;
   document.getElementById('statTime').textContent  = elapsed.toFixed(1) + ' s';
@@ -954,6 +994,8 @@ async function startReadLoop() {
         const l = line.trim();
         if (!l) return;
         if (l === 'READY') { log('마이크로비트 준비 완료', 'ok'); return; }
+        // ★수정: 연결 즉시 실시간 값 표시 (측정 시작 전에도)
+        parseLinePreview(l);
         if (measuring && !paused) parseLine(l);
       });
     }
@@ -968,6 +1010,7 @@ async function startReadLoop() {
 btnStart.addEventListener('click', () => {
   if (!connected) return;
   measuring = true; paused = false;
+  startT = null;  // ★수정: 측정 시작 시 마이크로비트 타이머 기준점 리셋
   if (!startTime) startTime = new Date();
   statusBadge.textContent = '측정 중';
   statusBadge.className   = 'status-badge recording';
@@ -997,6 +1040,7 @@ btnStop.addEventListener('click', () => {
 
 btnClear.addEventListener('click', () => {
   data = []; chartData = []; rowCount = 0; startTime = null;
+  startT = null;  // ★수정: 초기화 시 마이크로비트 타이머 기준점도 리셋
   statsAcc = [0,1,2,3].map(() => ({ min: Infinity, max: -Infinity, sum: 0, sumSq: 0, n: 0 }));
   tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px 0;font-family:var(--sans)">데이터가 초기화되었습니다.</td></tr>`;
   [0,1,2,3].forEach(i => {
@@ -1014,9 +1058,10 @@ btnClear.addEventListener('click', () => {
 
 btnDownload.addEventListener('click', () => {
   if (!data.length) return;
-  let csv = '번호,시각,경과시간(s),|a|(mg),aX(mg),aY(mg),aZ(mg)\n';
+  // ★수정: CSV 헤더 및 값 단위를 m/s²로 표기, 소수점 4자리
+  let csv = '번호,시각,경과시간(s),|a|(m/s²),aX(m/s²),aY(m/s²),aZ(m/s²)\n';
   data.forEach((r, idx) => {
-    csv += `${idx+1},${r.time},${r.elapsed.toFixed(3)},${r.vals[0].toFixed(0)},${r.vals[1].toFixed(0)},${r.vals[2].toFixed(0)},${r.vals[3].toFixed(0)}\n`;
+    csv += `${idx+1},${r.time},${r.elapsed.toFixed(3)},${r.vals[0].toFixed(4)},${r.vals[1].toFixed(4)},${r.vals[2].toFixed(4)},${r.vals[3].toFixed(4)}\n`;
   });
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('﻿' + csv);
